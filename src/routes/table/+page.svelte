@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { MoveIcon, SortableItem } from '$lib/index.js';
-	import { flip } from 'svelte/animate';
+	import { MoveIcon, SortableItem } from '$lib/index.js'
+	import { flip } from 'svelte/animate'
 
 	let stateUsers = $state([
 		{ id: 1, name: 'John', age: 45 },
 		{ id: 2, name: 'Mark', age: 33 },
 		{ id: 3, name: 'Jonas', age: 56 },
 		{ id: 4, name: 'Mary', age: 76 },
-	]);
-	let stateHoveredItem = $state(-1);
+	])
+	let stateHoveredItem = $state(-1)
 </script>
 
 <svelte:head>
@@ -32,8 +32,8 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th>NAME</th>
-				<th>AGE</th>
+				<th>Name</th>
+				<th>Age</th>
 			</tr>
 		</thead>
 		<tbody>

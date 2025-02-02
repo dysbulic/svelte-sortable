@@ -1,17 +1,15 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	let {
-		children,
-	}: {
-		children: Snippet;
-	} = $props();
+	let { children }: { children: Snippet } = $props();
 </script>
 
-<ul>
-	<li><a href="/">SKELETON EXAMPLE</a></li>
-	<li><a href="/table">BOOTSTRAP 5 TABLE EXAMPLE</a></li>
-</ul>
+<nav>
+	<ul>
+		<li><a href="/">Skeleton Example</a></li>
+		<li><a href="/table">Bootstrap 5 Table Example</a></li>
+	</ul>
+</nav>
 
 {@render children()}
 

@@ -1,75 +1,58 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import type { Snippet } from 'svelte'
+
+	type TargetedEvent = DragEvent & {
+		currentTarget: EventTarget & HTMLElement
+	}
 
 	let {
-		propItemNumber,
-		propData = $bindable(),
-		propHoveredItemNumber = $bindable(-1), // ANY NON-INTEGER NUMBER
-		propIsImageHidden = false,
+		index,
+		data = $bindable(),
+		hoveredIndex = $bindable(null),
 		children,
-		...propRest
+		...props
 	}: {
-		propItemNumber: number;
-		propData: unknown[];
-		propHoveredItemNumber?: number;
-		propIsImageHidden?: boolean;
-		children: Snippet;
-	} = $props();
+		index: number
+		data: Array<unknown>
+		hoveredIndex?: number | null
+		children: Snippet
+	} & Partial<typeof HTMLSpanElement> = $props()
 
-	// FUNCTIONS
-	const functionDrop = function (
-		parEvent: DragEvent & { currentTarget: EventTarget & HTMLElement },
-		parTarget: number,
-	) {
-		parEvent.preventDefault();
-		if (parEvent.dataTransfer === null) return;
-		parEvent.dataTransfer.dropEffect = 'move';
-		const start = parseInt(parEvent.dataTransfer.getData('text/plain'));
-		const newTracklist = propData;
+	const start = function (evt: TargetedEvent, start: number) {
+		if (evt.dataTransfer == null) {
+			console.warn('No `dataTransfer` on `event`.')
+			return
+		}
+		evt.dataTransfer.effectAllowed = 'move'
+		evt.dataTransfer.dropEffect = 'move'
+		evt.dataTransfer.setData('text/plain', start.toString())
+	}
+	const drop = function (evt: TargetedEvent, target: number) {
+		if (evt.dataTransfer == null) {
+			console.warn('No `dataTransfer` on `event`.')
+			return
+		}
+		evt.dataTransfer.dropEffect = 'move'
+		const start = Number(evt.dataTransfer.getData('text/plain'))
 
-		if (start < parTarget) {
-			newTracklist.splice(parTarget + 1, 0, newTracklist[start]);
-			newTracklist.splice(start, 1);
-		} else {
-			newTracklist.splice(parTarget, 0, newTracklist[start]);
-			newTracklist.splice(start + 1, 1);
-		}
-		propData = newTracklist;
-		propHoveredItemNumber = -1; // ANY NON-INTEGER NUMBER
-	};
-	const functionDragStart = function (
-		parEvent: DragEvent & { currentTarget: EventTarget & HTMLElement },
-		parIndex: number,
-	) {
-		if (parEvent.dataTransfer === null) return;
-		parEvent.dataTransfer.effectAllowed = 'move';
-		parEvent.dataTransfer.dropEffect = 'move';
-		if (propIsImageHidden) {
-			const transparentImage = new Image();
-			// https://stackoverflow.com/a/40923520
-			transparentImage.src =
-				'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-			parEvent.dataTransfer.setDragImage(transparentImage, 0, 0);
-		}
-		const start = parIndex;
-		parEvent.dataTransfer.setData('text/plain', start.toString());
-	};
-	/////
+		const [removed] = data.splice(start, 1)
+		if (start < target) --target
+		data.splice(target, 0, removed)
+
+		hoveredIndex = null
+	}
 </script>
 
 <span
-	role="list"
-	{...propRest}
+	{...props}
+	role="listitem"
 	draggable="true"
-	ondragstart={(parEvent) => functionDragStart(parEvent, propItemNumber)}
-	ondrop={(event) => functionDrop(event, propItemNumber)}
-	ondragover={(parEvent: DragEvent & { currentTarget: EventTarget & HTMLElement }) => {
-		parEvent.preventDefault();
-		return false;
-	}}
-	ondragenter={(parEvent: DragEvent & { currentTarget: EventTarget & HTMLElement }) => {
-		parEvent.preventDefault();
-		propHoveredItemNumber = propItemNumber;
+	ondragstart={(evt) => start(evt, index)}
+	ondrop={(evt) => drop(evt, index)}
+	ondragover={(evt: DragEvent) => evt.preventDefault()}
+	ondragenter={(evt: DragEvent) => {
+		evt.preventDefault()
+		hoveredIndex = index
 	}}
 >
 	{@render children()}
