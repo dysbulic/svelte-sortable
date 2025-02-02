@@ -87,8 +87,8 @@
   ))
 </script>
 
-<div class={listClasses}>
+<ul class={listClasses}>
   {#each data as datum (datum.id)}
     <Row {row} {rowClasses} {preview} {isDatum} {datum}/>
   {/each}
-</div>
+</ul>

@@ -122,7 +122,7 @@
   })
 </script>
 
-<div class="relative">
+<li class="relative">
   <div
     data-task-id={datum.id}
     bind:this={element}
@@ -133,4 +133,4 @@
   {#if status.type === 'is-dragging-over' && status.closestEdge}
     <DropIndicator edge={status.closestEdge} gap={'0.5rem'}/>
   {/if}
-</div>
+</li>

@@ -44,17 +44,17 @@
 {/snippet}
 
 {#snippet preview(datum: Task)}
-  <div class="border-solid rounded p-2 bg-white">
+  <div class="border-solid rounded p-2 bg-white dark:bg-white/25">
     {datum.content}
   </div>
 {/snippet}
 
 <SortableList
   bind:data={tasks}
-  listClasses="my-0 mx-auto w-[420px] flex flex-col gap-2 border border-solid rounded p-2 pt-6"
+  listClasses="my-4 mx-auto w-[420px] flex flex-col gap-2 border border-solid rounded p-2"
   {row}
   rowClasses={(type: DragStateType) => (
-    `flex text-sm bg-white flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 hover:cursor-grab ${stateStyles[type] ?? ''}`
+    `flex text-sm bg-white dark:bg-gray-800 dark:text-white/75 flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab ${stateStyles[type] ?? ''}`
   )}
   {preview}
 />
