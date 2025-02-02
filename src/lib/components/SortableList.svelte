@@ -19,12 +19,14 @@
   let {
     data = $bindable([]),
     isDatum: externalIsDatum,
+    listClasses,
     row,
     rowClasses,
     preview,
   }: {
     data: Array<IdedR>
     isDatum?: (datum: unknown) => datum is IdedR,
+    listClasses?: string,
     row: Snippet<[R]>,
     rowClasses?: (type: DragStateType) => string,
     preview: Snippet<[R]>,
@@ -85,10 +87,8 @@
   ))
 </script>
 
-<div class="pt-6 my-0 mx-auto w-[420px]">
-  <div class="flex flex-col gap-2 border border-solid rounded p-2">
-    {#each data as datum (datum.id)}
-      <Row {row} {rowClasses} {preview} {isDatum} {datum}/>
-    {/each}
-  </div>
+<div class={listClasses}>
+  {#each data as datum (datum.id)}
+    <Row {row} {rowClasses} {preview} {isDatum} {datum}/>
+  {/each}
 </div>

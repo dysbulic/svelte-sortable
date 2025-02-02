@@ -51,6 +51,7 @@
 
 <SortableList
   bind:data={tasks}
+  listClasses="my-0 mx-auto w-[420px] flex flex-col gap-2 border border-solid rounded p-2 pt-6"
   {row}
   rowClasses={(type: DragStateType) => (
     `flex text-sm bg-white flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 hover:cursor-grab ${stateStyles[type] ?? ''}`
