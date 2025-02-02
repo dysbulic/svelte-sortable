@@ -4,6 +4,7 @@
   import Pill from '$lib/components/Status.svelte'
   import { GripVertical } from 'lucide-svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
+  import GitHub from '../github.svg?raw'
 
   type Task = {
     id: number
@@ -48,6 +49,15 @@
     {datum.content}
   </div>
 {/snippet}
+
+<a
+  href="https://github.com/dysbulic/svelte-sortable"
+  class="fixed top-4 right-4 h-10 w-10 hover:text-blue-500"
+  style:--hover-stroke-1="color-mix(in oklab, yellow, transparent)"
+  style:--hover-stroke-2="color-mix(in oklab, white 80%, transparent 25%)"
+>
+  {@html GitHub}
+</a>
 
 <SortableList
   bind:data={tasks}
