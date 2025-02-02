@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { getTasks, type TTask } from '$lib/task-data'
-  import Task from './Task.svelte'
   import {
     monitorForElements
   } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-  import { isTaskData } from '$lib/task-data'
   import {
     extractClosestEdge
   } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
@@ -14,6 +11,10 @@
   import {
     triggerPostMoveFlash
   } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
+  import Task from './Task.svelte'
+  import {
+    isTaskData, getTasks, type TTask,
+  } from '$lib/task-data'
 
   let tasks = $state<TTask[]>(getTasks())
 

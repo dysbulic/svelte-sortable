@@ -19,6 +19,7 @@
     type Edge,
     extractClosestEdge,
   } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+  import { mount } from 'svelte'
   import DropIndicator from './DropIndicator.svelte'
   import DragPreview from './DragPreview.svelte'
   import { getTaskData, isTaskData, type TTask } from '$lib/task-data'
@@ -65,6 +66,10 @@
             }),
             render({ container }) {
               status = { type: 'preview', container }
+              mount(DragPreview, {
+                target: container,
+                props: { task },
+              })
             },
           })
         },
@@ -132,6 +137,3 @@
     <DropIndicator edge={status.closestEdge} gap={'8px'}/>
   {/if}
 </div>
-{#if status.type === 'preview'}
-  <DragPreview task={task} />
-{/if}
