@@ -1,9 +1,12 @@
-<script lang="ts">
-  import { type TTask } from '$lib/task-data'
+<script lang="ts" generics="R extends Record<string | symbol, unknown>">
+    import type { Snippet } from 'svelte';
 
-  let { task }: { task: TTask } = $props()
+  let {
+    datum, preview,
+  }: {
+    datum: R
+    preview: Snippet<[R]>
+  } = $props()
 </script>
 
-<div class="border-solid rounded p-2 bg-white">
-  {task.content}
-</div>
+{@render preview(datum)}

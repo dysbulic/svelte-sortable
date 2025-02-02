@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="R extends Record<string | symbol, unknown>">
   import {
     monitorForElements
   } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -11,31 +11,50 @@
   import {
     triggerPostMoveFlash
   } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
-  import Task from './Task.svelte'
-  import {
-    isTaskData, getTasks, type TTask,
-  } from '$lib/task-data'
+  import type { Snippet } from 'svelte';
+  import Row, { type DragStateType } from './Row.svelte'
 
-  let tasks = $state<TTask[]>(getTasks())
+  type IdedR = { id: number } & R
+
+  let {
+    data = $bindable([]),
+    isDatum: externalIsDatum,
+    row,
+    rowClasses,
+    preview,
+  }: {
+    data: Array<IdedR>
+    isDatum?: (datum: unknown) => datum is IdedR,
+    row: Snippet<[R]>,
+    rowClasses?: (type: DragStateType) => string,
+    preview: Snippet<[R]>,
+  } = $props()
+
+  const isDatum = (datum: unknown): datum is IdedR => (
+    externalIsDatum ? externalIsDatum(datum) : true
+  )
 
   $effect(() => (
     monitorForElements({
       canMonitor({ source }) {
-        return isTaskData(source.data)
+        return isDatum(source.data)
       },
       onDrop({ location, source }) {
         const [target] = location.current.dropTargets
         if(!target) return
 
-        const sourceData = source.data
-        const targetData = target.data
+        const { data: sourceData } = source
+        const { data: targetData } = target
 
-        if(!isTaskData(sourceData) || !isTaskData(targetData)) {
+        if(!isDatum(sourceData) || !isDatum(targetData)) {
           return
         }
 
-        const indexOfSource = tasks.findIndex((task) => task.id === sourceData.taskId)
-        const indexOfTarget = tasks.findIndex((task) => task.id === targetData.taskId)
+        const indexOfDatum = (id: number) => (
+          data.findIndex(({ id: current }) => current === id)
+        )
+        const indexOfSource = indexOfDatum(sourceData.id)
+        const indexOfTarget = indexOfDatum(targetData.id)
 
         if(indexOfTarget < 0 || indexOfSource < 0) {
           return
@@ -45,8 +64,8 @@
           extractClosestEdge(targetData)
         )
 
-        tasks = reorderWithEdge({
-          list: tasks,
+        data = reorderWithEdge({
+          list: data,
           startIndex: indexOfSource,
           indexOfTarget,
           closestEdgeOfTarget,
@@ -57,7 +76,7 @@
         // We could use react context to register the element in a lookup,
         // and then we could retrieve that element after the drop and use
         // `triggerPostMoveFlash`. But this gets the job done.
-        const element = document.querySelector(`[data-task-id="${sourceData.taskId}"]`)
+        const element = document.querySelector(`[data-element-id="${sourceData.id}"]`)
         if(element instanceof HTMLElement) {
           triggerPostMoveFlash(element)
         }
@@ -68,8 +87,8 @@
 
 <div class="pt-6 my-0 mx-auto w-[420px]">
   <div class="flex flex-col gap-2 border border-solid rounded p-2">
-    {#each tasks as task (task.id)}
-      <Task {task}/>
+    {#each data as datum (datum.id)}
+      <Row {row} {rowClasses} {preview} {isDatum} {datum}/>
     {/each}
   </div>
 </div>

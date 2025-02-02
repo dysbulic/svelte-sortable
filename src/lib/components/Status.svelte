@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { TStatus } from '$lib/task-data'
+  import type { Status } from '$lib/types';
 
-  let { status }: { status: TStatus } = $props()
+  let { status }: { status: Status } = $props()
 
-  const bgColor: { [Key in TStatus]: string } = {
+  const bgColor: { [Key in Status]: string } = {
     todo: 'bg-violet-200 ',
     'in-progress': 'bg-amber-200',
     done: 'bg-green-200',
   }
 
-  const label: { [Key in TStatus]: string } = {
+  const label: { [Key in Status]: string } = {
     todo: 'TODO',
-    'in-progress': 'In progress',
+    'in-progress': 'In Progress',
     done: 'Done',
   }
 </script>
