@@ -23,10 +23,8 @@
         return isTaskData(source.data)
       },
       onDrop({ location, source }) {
-        const target = location.current.dropTargets[0]
-        if(!target) {
-          return
-        }
+        const [target] = location.current.dropTargets
+        if(!target) return
 
         const sourceData = source.data
         const targetData = target.data
@@ -42,7 +40,9 @@
           return
         }
 
-        const closestEdgeOfTarget = extractClosestEdge(targetData)
+        const closestEdgeOfTarget = (
+          extractClosestEdge(targetData)
+        )
 
         tasks = reorderWithEdge({
           list: tasks,
