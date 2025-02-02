@@ -10,4 +10,4 @@ To start a local development version of the application, run:
 pnpm dev
 ```
 
-Assuming you've already run `pnpm install` to install the dependencies. *(The application runs on Node 18 & `pnpm` 8 because that's what's available on [StackBlitz](https://stackblitz.com/~/github.com/dysbulic/svelte-sortable) as of 2025-2-2.)*
+Assuming you've already run `pnpm install` to install the dependencies.
