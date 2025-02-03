@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Status } from '$lib/types';
+  import type { Status } from '$lib/types'
 
   let { status }: { status: Status } = $props()
 

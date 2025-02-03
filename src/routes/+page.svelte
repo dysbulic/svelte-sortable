@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { GripVertical } from 'lucide-svelte'
+  import clsx from 'clsx'
   import SortableList from '$lib/components/SortableList.svelte'
   import { type Status } from '$lib/types'
   import Pill from '$lib/components/Status.svelte'
-  import { GripVertical } from 'lucide-svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
   import GitHub from '../github.svg?raw'
 
@@ -26,6 +27,8 @@
       { id: idx, content, status }
     ))
   )
+  let history: Array<Array<Task>> = $state([])
+  let disabled = $derived(history.length === 0)
 
   const stateStyles: { [Key in DragStateType]?: string } = {
     'is-dragging': 'opacity-40',
@@ -61,13 +64,42 @@
 
 <SortableList
   bind:data={tasks}
-  listClasses="my-4 mx-auto w-[420px] flex flex-col gap-2 border border-solid rounded p-2"
+  bind:history
+  listClasses={clsx(
+    'my-4 mx-auto w-[420px] flex flex-col gap-2',
+    'border border-solid rounded p-2',
+  )}
   {row}
-  rowClasses={(type: DragStateType) => (
-    `flex text-sm bg-white dark:bg-gray-800 dark:text-white/75 flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab ${stateStyles[type] ?? ''}`
+  rowClasses={(type: DragStateType) => clsx(
+    'flex text-sm bg-white dark:bg-gray-800 dark:text-white/75',
+    'flex-row items-center border border-solid rounded p-2 pl-0',
+    'hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab',
+    stateStyles[type],
   )}
   {preview}
 />
+
+<section id="controls">
+  <nav>
+    <ul class="flex justify-center">
+      <li class="contents">
+        <button
+          onclick={() => {
+            const past = history.pop()
+            if(past) tasks = past
+          }}
+          {disabled}
+          class={clsx(
+            'bg-blue-400 dark:bg-indigo-500',
+            !disabled && 'hover:bg-amber-400 hover:text-gray-800',
+            'transition-all px-3 py-1.5 rounded',
+            disabled && 'opacity-50 cursor-not-allowed',
+          )}
+        >Undo</button>
+      </li>
+    </ul>
+  </nav>
+</section>
 
 <pre>
   {JSON.stringify(tasks, null, 2)}

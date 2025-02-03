@@ -11,13 +11,14 @@
   import {
     triggerPostMoveFlash
   } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte'
   import Row, { type DragStateType } from './Row.svelte'
 
   type IdedR = { id: number } & R
 
   let {
     data = $bindable([]),
+    history = $bindable([]),
     isDatum: externalIsDatum,
     listClasses,
     row,
@@ -25,6 +26,7 @@
     preview,
   }: {
     data: Array<IdedR>
+    history?: Array<Array<R>>
     isDatum?: (datum: unknown) => datum is IdedR,
     listClasses?: string,
     row: Snippet<[R]>,
@@ -66,6 +68,7 @@
           extractClosestEdge(targetData)
         )
 
+        history.push([...data])
         data = reorderWithEdge({
           list: data,
           startIndex: indexOfSource,

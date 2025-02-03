@@ -1,5 +1,5 @@
 <script lang="ts" generics="R extends Record<string | symbol, unknown>">
-    import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte'
 
   let {
     datum, preview,

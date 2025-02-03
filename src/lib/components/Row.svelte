@@ -124,7 +124,7 @@
 
 <li class="relative">
   <div
-    data-task-id={datum.id}
+    data-element-id={datum.id}
     bind:this={element}
     class={rowClasses?.(status.type)}
   >
