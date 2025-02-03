@@ -62,45 +62,49 @@
   {@html GitHub}
 </a>
 
-<SortableList
-  bind:data={tasks}
-  bind:history
-  listClasses={clsx(
-    'my-4 mx-auto w-[420px] flex flex-col gap-2',
-    'border border-solid rounded p-2',
-  )}
-  {row}
-  rowClasses={(type: DragStateType) => clsx(
-    'flex text-sm bg-white dark:bg-gray-800 dark:text-white/75',
-    'flex-row items-center border border-solid rounded p-2 pl-0',
-    'hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab',
-    stateStyles[type],
-  )}
-  {preview}
-/>
+<main class="flex flex-wrap justify-center gap-12 items-center">
+  <section id="list">
+    <SortableList
+      bind:data={tasks}
+      bind:history
+      listClasses={clsx(
+        'my-4 mx-auto w-[420px] flex flex-col gap-2',
+        'border border-solid rounded p-2',
+      )}
+      {row}
+      rowClasses={(type: DragStateType) => clsx(
+        'flex text-sm bg-white dark:bg-gray-800 dark:text-white/75',
+        'flex-row items-center border border-solid rounded p-2 pl-0',
+        'hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab',
+        stateStyles[type],
+      )}
+      {preview}
+    />
 
-<section id="controls">
-  <nav>
-    <ul class="flex justify-center">
-      <li class="contents">
-        <button
-          onclick={() => {
-            const past = history.pop()
-            if(past) tasks = past
-          }}
-          {disabled}
-          class={clsx(
-            'bg-blue-400 dark:bg-indigo-500',
-            !disabled && 'hover:bg-amber-400 hover:text-gray-800',
-            'transition-all px-3 py-1.5 rounded',
-            disabled && 'opacity-50 cursor-not-allowed',
-          )}
-        >Undo</button>
-      </li>
-    </ul>
-  </nav>
-</section>
+    <section id="controls">
+      <nav>
+        <ul class="flex justify-center">
+          <li class="contents">
+            <button
+              onclick={() => {
+                const past = history.pop()
+                if(past) tasks = past
+              }}
+              {disabled}
+              class={clsx(
+                'bg-blue-400 dark:bg-indigo-500',
+                !disabled && 'hover:bg-amber-400 hover:text-gray-800',
+                'transition-all px-3 py-1.5 rounded',
+                disabled && 'opacity-50 cursor-not-allowed',
+              )}
+            >Undo</button>
+          </li>
+        </ul>
+      </nav>
+    </section>
+  </section>
 
-<pre>
-  {JSON.stringify(tasks, null, 2)}
-</pre>
+  <pre>{JSON.stringify(
+    tasks.map(({ id, content }) => `${id}: ${content}`), null, 2)
+  }</pre>
+</main>
