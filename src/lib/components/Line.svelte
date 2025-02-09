@@ -13,8 +13,8 @@
     if(editing) input?.focus()
   })
 
-  const rename = (e: Event) => {
-    e.preventDefault()
+  const rename = (e?: Event) => {
+    e?.preventDefault()
     if(datum.content !== original) {
       const detail = {
         old: { ...datum, content: original },
@@ -42,7 +42,11 @@
   )
   const toggle = () => {
     editing = !editing
-    if(editing) original = datum.content
+    if(editing) {
+      original = datum.content
+    } else {
+      rename()
+    }
   }
 </script>
 
