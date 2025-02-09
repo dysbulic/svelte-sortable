@@ -1,17 +1,19 @@
-<script lang="ts">
-  import { GripVertical } from 'lucide-svelte'
-  import clsx from 'clsx'
-  import SortableList from '$lib/components/SortableList.svelte'
-  import { type Status } from '$lib/types'
-  import Pill from '$lib/components/Status.svelte'
-  import { type DragStateType } from '$lib/components/Row.svelte'
-  import GitHub from '../github.svg?raw'
-
-  type Task = {
+<script lang="ts" module>
+  export type Task = {
     id: number
     content: string
     status: Status
   }
+</script>
+
+<script lang="ts">
+  import clsx from 'clsx'
+  import SortableList from '$lib/components/SortableList.svelte'
+  import { type DragStateType } from '$lib/components/Row.svelte'
+  import Line from '$lib/components/Line.svelte'
+  import { type Status } from '$lib/types'
+  import GitHub from '../github.svg?raw'
+  import DragPreview from '$lib/components/DragPreview.svelte';
 
   let tasks: Array<Task> = $state(
     [
@@ -39,20 +41,6 @@
   <title>Svelte Pragmatic Sort</title>
 </svelte:head>
 
-{#snippet row(datum: Task)}
-  <div class="w-6 flex justify-center">
-    <GripVertical size={10}/>
-  </div>
-  <span class="truncate flex-grow flex-shrink">{datum.content}</span>
-  <Pill status={datum.status}/>
-{/snippet}
-
-{#snippet preview(datum: Task)}
-  <div class="border-solid rounded p-2 bg-white dark:bg-white/25">
-    {datum.content}
-  </div>
-{/snippet}
-
 <a
   href="https://github.com/dysbulic/svelte-sortable"
   class="fixed top-4 right-4 h-10 w-10 hover:text-blue-500"
@@ -71,14 +59,14 @@
         'my-4 mx-auto w-[420px] flex flex-col gap-2',
         'border border-solid rounded p-2',
       )}
-      {row}
+      row={Line}
       rowClasses={(type: DragStateType) => clsx(
-        'flex text-sm bg-white dark:bg-gray-800 dark:text-white/75',
-        'flex-row items-center border border-solid rounded p-2 pl-0',
+        'text-sm bg-white dark:bg-gray-800 dark:text-white/75',
+        'border border-solid rounded p-2 pl-0',
         'hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab',
         stateStyles[type],
       )}
-      {preview}
+      preview={DragPreview}
     />
 
     <section id="controls">

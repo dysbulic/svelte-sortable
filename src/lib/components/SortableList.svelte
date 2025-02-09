@@ -1,4 +1,4 @@
-<script lang="ts" generics="R extends Record<string | symbol, unknown>">
+<script lang="ts" generics="D extends Record<string | symbol, unknown> & { id: number }">
   import {
     monitorForElements
   } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -11,10 +11,8 @@
   import {
     triggerPostMoveFlash
   } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash'
-  import type { Snippet } from 'svelte'
+  import type { Component, Snippet } from 'svelte'
   import Row, { type DragStateType } from './Row.svelte'
-
-  type IdedR = { id: number } & R
 
   let {
     data = $bindable([]),
@@ -25,16 +23,16 @@
     rowClasses,
     preview,
   }: {
-    data: Array<IdedR>
-    history?: Array<Array<R>>
-    isDatum?: (datum: unknown) => datum is IdedR,
-    listClasses?: string,
-    row: Snippet<[R]>,
-    rowClasses?: (type: DragStateType) => string,
-    preview: Snippet<[R]>,
+    data: Array<D>
+    history?: Array<Array<D>>
+    isDatum?: (datum: unknown) => datum is D
+    listClasses?: string
+    row: Component<D>
+    rowClasses?: (type: DragStateType) => string
+    preview: Component<D>
   } = $props()
 
-  const isDatum = (datum: unknown): datum is IdedR => (
+  const isDatum = (datum: unknown): datum is D => (
     externalIsDatum ? externalIsDatum(datum) : true
   )
 
@@ -77,11 +75,9 @@
           axis: 'vertical',
         })
 
-        // Being simple and just querying for the task after the drop.
-        // We could use react context to register the element in a lookup,
-        // and then we could retrieve that element after the drop and use
-        // `triggerPostMoveFlash`. But this gets the job done.
-        const element = document.querySelector(`[data-element-id="${sourceData.id}"]`)
+        const element = document.querySelector(
+          `[data-element-id="${sourceData.id}"]`
+        )
         if(element instanceof HTMLElement) {
           triggerPostMoveFlash(element)
         }

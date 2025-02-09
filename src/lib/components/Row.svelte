@@ -35,7 +35,7 @@
     type Edge,
     extractClosestEdge,
   } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
-  import { mount, type Snippet } from 'svelte'
+  import { mount, type Component, type Snippet } from 'svelte'
   import DropIndicator from './DropIndicator.svelte'
   import DragPreview from './DragPreview.svelte'
 
@@ -46,9 +46,9 @@
   }: {
     datum: R
     isDatum: (datum: unknown) => datum is R
-    row: Snippet<[R]>
+    row: Component<R>
     rowClasses?: (type: DragStateType) => string
-    preview: Snippet<[R]>
+    preview: Component<R>
   } = $props()
   let element = $state<HTMLDivElement | null>(null)
   let status = $state<DragState>(idle)
@@ -128,7 +128,7 @@
     bind:this={element}
     class={rowClasses?.(status.type)}
   >
-    {@render row(datum)}
+    <row {datum}></row>
   </div>
   {#if status.type === 'is-dragging-over' && status.closestEdge}
     <DropIndicator edge={status.closestEdge} gap={'0.5rem'}/>
