@@ -110,7 +110,6 @@
     <li>Click the status to switch to the next option.</li>
     <li>Drag the slider to view the historical states.</li>
     <li>Click <q>Undo</q> to revert the most recent change.</li>
-    <li>Click <q>Redo</q> to reapply the most recent change.</li>
   </ul>
 </header>
 <main class="flex flex-wrap justify-center gap-12 items-center">
