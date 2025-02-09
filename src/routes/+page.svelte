@@ -10,10 +10,10 @@
   import clsx from 'clsx'
   import SortableList from '$lib/components/SortableList.svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
-  import Line from '$lib/components/Line.svelte'
-  import { type Status } from '$lib/types'
+  import row from '$lib/components/Line.svelte'
+  import { DatumChangedEvent, type Status } from '$lib/types'
   import GitHub from '../github.svg?raw'
-  import DragPreview from '$lib/components/DragPreview.svelte';
+  import preview from '$lib/components/DragPreview.svelte';
 
   let tasks: Array<Task> = $state(
     [
@@ -35,6 +35,27 @@
   const stateStyles: { [Key in DragStateType]?: string } = {
     'is-dragging': 'opacity-40',
   }
+
+  $effect(() => {
+    const listener = (evt: CustomEvent<{ old: Task }>) => {
+      console.debug({ evt })
+      const state = [...tasks]
+      const index = state.findIndex(
+        (task) => task.id === evt.detail.old.id
+      )
+      if(index < 0) {
+        console.warn('Couldn’t find edited Task:', evt.detail.old)
+      } else {
+        state.splice(index, 1, evt.detail.old)
+        history.push(state)
+      }
+    }
+    document.addEventListener('datum-changed', listener)
+
+    return () => {
+      document.removeEventListener('datum-changed', listener)
+    }
+  })
 </script>
 
 <svelte:head>
@@ -59,14 +80,14 @@
         'my-4 mx-auto w-[420px] flex flex-col gap-2',
         'border border-solid rounded p-2',
       )}
-      row={Line}
-      rowClasses={(type: DragStateType) => clsx(
+      {row}
+      rowClasses={(type: DragStateType) => [
         'text-sm bg-white dark:bg-gray-800 dark:text-white/75',
         'border border-solid rounded p-2 pl-0',
         'hover:bg-slate-100 dark:hover:bg-gray-600 hover:cursor-grab',
-        stateStyles[type],
-      )}
-      preview={DragPreview}
+        stateStyles[type] as string,
+      ]}
+      {preview}
     />
 
     <section id="controls">
@@ -79,13 +100,13 @@
                 if(past) tasks = past
               }}
               {disabled}
-              class={clsx(
+              class={[
                 'bg-blue-400 dark:bg-indigo-500',
                 !disabled && 'hover:bg-amber-400 hover:text-gray-800',
                 'transition-all px-3 py-1.5 rounded',
                 disabled && 'opacity-50 cursor-not-allowed',
-              )}
-            >Undo</button>
+              ]}
+            >Undo ⨯{history.length}</button>
           </li>
         </ul>
       </nav>

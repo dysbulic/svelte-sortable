@@ -16,7 +16,7 @@
   }
 </script>
 
-<div class="flex w-[100px] justify-end">
+<div class="justify-end whitespace-nowrap">
   <span
     class={`${bgColor[status]} uppercase p-1 rounded font-semibold flex-shrink-0 text-xs text-slate-900 `}
   >

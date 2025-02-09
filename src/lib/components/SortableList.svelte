@@ -27,9 +27,9 @@
     history?: Array<Array<D>>
     isDatum?: (datum: unknown) => datum is D
     listClasses?: string
-    row: Component<D>
-    rowClasses?: (type: DragStateType) => string
-    preview: Component<D>
+    row: Component
+    rowClasses?: (type: DragStateType) => string | Array<string>
+    preview: Component
   } = $props()
 
   const isDatum = (datum: unknown): datum is D => (
