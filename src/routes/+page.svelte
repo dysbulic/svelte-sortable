@@ -156,7 +156,7 @@
   </section>
 
   <section id="history" class="flex flex-col gap-2">
-    {#if histIdx === history.length}
+    {#if histIdx >= history.length}
       <pre>{display(tasks)}</pre>
     {:else}
       <pre>{display(history[histIdx])}</pre>
