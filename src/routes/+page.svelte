@@ -11,7 +11,7 @@
   import SortableList from '$lib/components/SortableList.svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
   import row from '$lib/components/Line.svelte'
-  import { DatumChangedEvent, type Status } from '$lib/types'
+  import { type Status } from '$lib/types'
   import GitHub from '../github.svg?raw'
   import preview from '$lib/components/DragPreview.svelte';
 
@@ -30,6 +30,7 @@
     ))
   )
   let history: Array<Array<Task>> = $state([])
+  let histIdx = $state(0)
   let disabled = $derived(history.length === 0)
 
   const stateStyles: { [Key in DragStateType]?: string } = {
@@ -37,9 +38,13 @@
   }
 
   $effect(() => {
-    const listener = (evt: CustomEvent<{ old: Task }>) => {
-      console.debug({ evt })
-      const state = [...tasks]
+    histIdx = history.length
+  })
+
+  $effect(() => {
+    const listener = (event: Event) => {
+      const evt = event as CustomEvent<{ old: Task }>
+      const state = tasks.map((task) => ({ ...task }))
       const index = state.findIndex(
         (task) => task.id === evt.detail.old.id
       )
@@ -56,6 +61,16 @@
       document.removeEventListener('datum-changed', listener)
     }
   })
+
+  const display = (tasks: Array<Task>) => (
+    JSON.stringify(
+      tasks.map(({ id, content, status }) => (
+        `${id}: ${content} (${status})`
+      )),
+      null,
+      2,
+    )
+  )
 </script>
 
 <svelte:head>
@@ -71,6 +86,33 @@
   {@html GitHub}
 </a>
 
+<header>
+  <h1 class="text-3xl font-bold text-center my-10">
+    <a
+      href="https://atlassian.design/components/pragmatic-drag-and-drop/about"
+      target="_blank"
+      class="text-blue-300 hover:text-green-700"
+    >
+      Atlasian's Pragmatic Sort
+    </a>
+    in
+    <a
+      href="https://svelte.dev"
+      target="_blank"
+      class="text-blue-300 hover:text-green-700"
+    >
+      Svelte
+    </a>
+  </h1>
+  <ul class="list-disc pl-7 max-w-96 mx-auto my-5">
+    <li>Drag and drop list items to reorder them.</li>
+    <li>Double click a list item to edit it.</li>
+    <li>Click the status to switch to the next option.</li>
+    <li>Drag the slider to view the historical states.</li>
+    <li>Click <q>Undo</q> to revert the most recent change.</li>
+    <li>Click <q>Redo</q> to reapply the most recent change.</li>
+  </ul>
+</header>
 <main class="flex flex-wrap justify-center gap-12 items-center">
   <section id="list">
     <SortableList
@@ -113,7 +155,17 @@
     </section>
   </section>
 
-  <pre>{JSON.stringify(
-    tasks.map(({ id, content }) => `${id}: ${content}`), null, 2)
-  }</pre>
+  <section id="history" class="flex flex-col gap-2">
+    {#if histIdx === history.length}
+      <pre>{display(tasks)}</pre>
+    {:else}
+      <pre>{display(history[histIdx])}</pre>
+    {/if}
+    <input
+      type="range"
+      min="0" max={history.length}
+      bind:value={histIdx}
+      class="grow"
+    />
+  </section>
 </main>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { GripVertical } from 'lucide-svelte'
-  import { DatumChangedEvent } from '$lib/types';
   import Pill from './Status.svelte'
   import type { Task } from '../../routes/+page.svelte'
+    import type { Status } from '$lib/types';
 
   let { datum }: { datum: Task } = $props()
   let editing = $state(false)
@@ -15,17 +15,31 @@
 
   const rename = (e: Event) => {
     e.preventDefault()
-    const detail = {
-      old: { ...datum, content: original } as Task,
-      new: { ...datum },
+    if(datum.content !== original) {
+      const detail = {
+        old: { ...datum, content: original },
+        new: { ...datum },
+      }
+      document.dispatchEvent(new CustomEvent(
+        'datum-changed',
+        { detail },
+      ))
     }
-    console.info({ Dispatching: detail })
-    document.dispatchEvent(new CustomEvent(
-      'datum-changed',
-      { detail },
-    ))
     editing = false
   }
+  const restatus = (
+    ({ old, new: altered }: { old: Status, new: Status }) => {
+      datum.status = altered
+      const detail = {
+        old: { ...datum, status: old },
+        new: { ...datum },
+      }
+      document.dispatchEvent(new CustomEvent(
+        'datum-changed',
+        { detail },
+      ))
+    }
+  )
   const toggle = () => {
     editing = !editing
     if(editing) original = datum.content
@@ -72,7 +86,7 @@
       class="truncate grow shrink pointer-events-none"
     >{datum.content}</span>
   {/if}
-  <Pill status={datum.status}/>
+  <Pill status={datum.status} onChange={restatus}/>
 </section>
 
 <style>
