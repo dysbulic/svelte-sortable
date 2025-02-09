@@ -1,12 +1,9 @@
-<script lang="ts" generics="R extends Record<string | symbol, unknown>">
-  import type { Snippet } from 'svelte'
+<script lang="ts">
+  import type { Task } from '../../routes/+page.svelte';
 
-  let {
-    datum, preview,
-  }: {
-    datum: R
-    preview: Snippet<[R]>
-  } = $props()
+  let { datum }: { datum: Task } = $props()
 </script>
 
-{@render preview(datum)}
+<div class="border-solid rounded p-2 bg-white dark:bg-white/25">
+  {datum.content}
+</div>

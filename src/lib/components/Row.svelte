@@ -35,20 +35,25 @@
     type Edge,
     extractClosestEdge,
   } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
-  import { mount, type Snippet } from 'svelte'
+  import { mount, type Component, type MountOptions, type Snippet } from 'svelte'
   import DropIndicator from './DropIndicator.svelte'
   import DragPreview from './DragPreview.svelte'
+    import type { Datum } from '$lib/types';
 
   const idle: DragState = { type: 'idle' }
 
   let {
-    datum, isDatum, row, rowClasses, preview,
+    datum, isDatum,
+    row: Row, rowClasses,
+    preview: Preview,
+    history = $bindable([]),
   }: {
     datum: R
     isDatum: (datum: unknown) => datum is R
-    row: Snippet<[R]>
-    rowClasses?: (type: DragStateType) => string
-    preview: Snippet<[R]>
+    row: Component<R>
+    rowClasses?: (type: DragStateType) => string | Array<string>
+    preview: Component<R>
+    history?: Array<Array<R>>
   } = $props()
   let element = $state<HTMLDivElement | null>(null)
   let status = $state<DragState>(idle)
@@ -70,10 +75,10 @@
             }),
             render({ container }) {
               status = { type: 'preview', container }
-              mount(DragPreview, {
+              mount(Preview, {
                 target: container,
-                props: { preview, datum },
-              })
+                props: { datum },
+              } as unknown as MountOptions<R>)
             },
           })
         },
@@ -128,7 +133,7 @@
     bind:this={element}
     class={rowClasses?.(status.type)}
   >
-    {@render row(datum)}
+    <Row {datum}/>
   </div>
   {#if status.type === 'is-dragging-over' && status.closestEdge}
     <DropIndicator edge={status.closestEdge} gap={'0.5rem'}/>
