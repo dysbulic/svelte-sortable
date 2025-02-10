@@ -2,7 +2,7 @@
   import { GripVertical } from 'lucide-svelte'
   import Pill from './Status.svelte'
   import type { Task } from '../../routes/+page.svelte'
-    import type { Status } from '$lib/types';
+    import type { Status } from '$lib/types.js';
 
   let { datum }: { datum: Task } = $props()
   let editing = $state(false)

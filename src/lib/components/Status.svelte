@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Status } from '$lib/types'
+  import type { Status } from '$lib/types.js'
 
   let { status, onChange }: {
     status: Status
