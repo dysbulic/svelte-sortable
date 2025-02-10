@@ -37,8 +37,6 @@
   } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
   import { mount, type Component, type MountOptions, type Snippet } from 'svelte'
   import DropIndicator from './DropIndicator.svelte'
-  import DragPreview from './DragPreview.svelte'
-    import type { Datum } from '$lib/types';
 
   const idle: DragState = { type: 'idle' }
 

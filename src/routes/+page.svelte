@@ -11,7 +11,7 @@
   import SortableList from '$lib/components/SortableList.svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
   import row from '$lib/components/Line.svelte'
-  import { type Status } from '$lib/types'
+  import { type Status } from '$lib/types.js'
   import GitHub from '../github.svg?raw'
   import preview from '$lib/components/DragPreview.svelte';
 
@@ -156,7 +156,7 @@
 
   <section id="history" class="flex flex-col gap-2">
     {#if histIdx >= history.length}
-      <pre>{display(tasks)}</pre>
+      <pre class="whitespace-pre-wrap">{display(tasks)}</pre>
     {:else}
       <pre>{display(history[histIdx])}</pre>
     {/if}

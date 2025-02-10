@@ -1,7 +1,8 @@
 {
-	"name": "svelte-sortable",
-	"private": true,
-	"version": "0.0.1",
+	"name": "svelte-pragmatic-sortable",
+	"license": "CC0-1.0",
+	"private": false,
+	"version": "0.3.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -11,7 +12,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "eslint .",
-		"gh:publish": "gh-pages --dist build/ --nojekyll --message 'Publishin’ to GitHub Pages 🥨'"
+		"gh:publish": "gh-pages --dist build/ --nojekyll --message 'Publishin’ to GitHub Pages 🥨'",
+		"npm:publish": "pnpm dlx @sveltejs/package && npm publish"
 	},
 	"dependencies": {
 		"@atlaskit/pragmatic-drag-and-drop": "^1.5.0",
@@ -39,5 +41,24 @@
 		"typescript-eslint": "^8.20.0",
 		"vite": "^6.0.0"
 	},
-	"packageManager": "pnpm@8.15.9+sha512.499434c9d8fdd1a2794ebf4552b3b25c0a633abcee5bb15e7b5de90f32f47b513aca98cd5cfd001c31f0db454bc3804edccd578501e4ca293a6816166bbd9f81"
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"files": [
+		"dist/",
+		"src/lib/"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		}
+	},
+	"sideEffects": ["**/*.css"],
+	"packageManager": "pnpm@10.2.1+sha512.398035c7bd696d0ba0b10a688ed558285329d27ea994804a52bad9167d8e3a72bcb993f9699585d3ca25779ac64949ef422757a6c31102c12ab932e5cbe5cc92",
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild"
+		]
+	}
 }
