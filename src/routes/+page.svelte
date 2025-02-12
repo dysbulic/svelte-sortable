@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-  import clsx from 'clsx'
+  import { StateHistory } from 'runed'
   import SortableList from '$lib/components/SortableList.svelte'
   import { type DragStateType } from '$lib/components/Row.svelte'
   import row from '$lib/components/Line.svelte'
@@ -29,38 +29,17 @@
       { id: idx, content, status }
     ))
   )
-  let history: Array<Array<Task>> = $state([])
-  let histIdx = $state(0)
-  let disabled = $derived(history.length === 0)
+  let history = new StateHistory(
+    () => tasks,
+    (next: Array<Task>) => tasks = next
+  )
+  let histIdx = $state(1)
+
+  $effect(() => { histIdx = history.log.length })
 
   const stateStyles: { [Key in DragStateType]?: string } = {
     'is-dragging': 'opacity-40',
   }
-
-  $effect(() => {
-    histIdx = history.length
-  })
-
-  $effect(() => {
-    const listener = (event: Event) => {
-      const evt = event as CustomEvent<{ old: Task }>
-      const state = tasks.map((task) => ({ ...task }))
-      const index = state.findIndex(
-        (task) => task.id === evt.detail.old.id
-      )
-      if(index < 0) {
-        console.warn('Couldn’t find edited Task:', evt.detail.old)
-      } else {
-        state.splice(index, 1, evt.detail.old)
-        history.push(state)
-      }
-    }
-    document.addEventListener('datum-changed', listener)
-
-    return () => {
-      document.removeEventListener('datum-changed', listener)
-    }
-  })
 
   const display = (tasks: Array<Task>) => (
     JSON.stringify(
@@ -93,7 +72,7 @@
       target="_blank"
       class="text-blue-300 hover:text-green-700"
     >
-      Atlasian's Pragmatic Sort
+      Atlassian's Pragmatic Sort
     </a>
     in
     <a
@@ -116,11 +95,10 @@
   <section id="list">
     <SortableList
       bind:data={tasks}
-      bind:history
-      listClasses={clsx(
+      listClasses={[
         'my-4 mx-auto w-[420px] flex flex-col gap-2',
         'border border-solid rounded p-2',
-      )}
+      ]}
       {row}
       rowClasses={(type: DragStateType) => [
         'text-sm bg-white dark:bg-gray-800 dark:text-white/75',
@@ -137,34 +115,34 @@
           <li class="contents">
             <button
               onclick={() => {
-                const past = history.pop()
-                if(past) tasks = past
+                history.undo()
+                histIdx = history.log.length
               }}
-              {disabled}
+              disabled={!history.canUndo}
               class={[
                 'bg-blue-400 dark:bg-indigo-500',
-                !disabled && 'hover:bg-amber-400 hover:text-gray-800',
+                history.canUndo && 'hover:bg-amber-400 hover:text-gray-800',
                 'transition-all px-3 py-1.5 rounded',
-                disabled && 'opacity-50 cursor-not-allowed',
+                !history.canUndo && 'opacity-50 cursor-not-allowed',
               ]}
-            >Undo ⨯{history.length}</button>
+            >Undo ⨯{history.log.length - 1}</button>
           </li>
         </ul>
       </nav>
     </section>
   </section>
 
-  <section id="history" class="flex flex-col gap-2">
-    {#if histIdx >= history.length}
-      <pre class="whitespace-pre-wrap">{display(tasks)}</pre>
-    {:else}
-      <pre>{display(history[histIdx])}</pre>
-    {/if}
-    <input
-      type="range"
-      min="0" max={history.length}
-      bind:value={histIdx}
-      class="grow"
-    />
-  </section>
+  {#if history.log.length > 0}
+    <section id="history" class="flex flex-col gap-2">
+      <pre class="whitespace-pre-wrap">{
+        display(history.log[histIdx - 1].snapshot)
+      }</pre>
+      <input
+        type="range"
+        min="1" max={history.log.length}
+        bind:value={histIdx}
+        class="grow"
+      />
+    </section>
+  {/if}
 </main>

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { GripVertical } from 'lucide-svelte'
+  import GripVertical from 'lucide-svelte/icons/grip-vertical'
   import Pill from './Status.svelte'
   import type { Task } from '../../routes/+page.svelte'
-    import type { Status } from '$lib/types.js';
+  import type { Status } from '$lib/types.js';
 
-  let { datum }: { datum: Task } = $props()
+  let { datum = $bindable(null) }: { datum: Task | null } = $props()
   let editing = $state(false)
-  let original = datum.content
+  let value = $state(datum?.content)
   let input = $state<HTMLElement | null>(null)
 
   $effect(() => {
@@ -15,35 +15,18 @@
 
   const rename = (e?: Event) => {
     e?.preventDefault()
-    if(datum.content !== original) {
-      const detail = {
-        old: { ...datum, content: original },
-        new: { ...datum },
-      }
-      document.dispatchEvent(new CustomEvent(
-        'datum-changed',
-        { detail },
-      ))
-    }
+    if(datum && value) datum.content = value
     editing = false
   }
   const restatus = (
     ({ old, new: altered }: { old: Status, new: Status }) => {
-      datum.status = altered
-      const detail = {
-        old: { ...datum, status: old },
-        new: { ...datum },
-      }
-      document.dispatchEvent(new CustomEvent(
-        'datum-changed',
-        { detail },
-      ))
+      if(datum && altered) datum.status = altered
     }
   )
   const toggle = () => {
     editing = !editing
     if(editing) {
-      original = datum.content
+      value = datum?.content
     } else {
       rename()
     }
@@ -56,8 +39,8 @@
   ondblclick={toggle}
   class="flex items-center justify-center"
 >
-  <span class="px-3">
-    <GripVertical size={10}/>
+  <span class="px-1">
+    <GripVertical/>
   </span>
   {#if editing}
     <form
@@ -67,10 +50,10 @@
     >
       <input
         onload={({ target }) => (target as HTMLElement).focus()}
-        bind:value={datum.content}
+        bind:value
         onkeydown={({ key }) => {
           if(key === 'Escape') {
-            datum.content = original
+            value = datum?.content
             editing = false
           }
         }}
@@ -80,7 +63,7 @@
         ]}
       />
       <button class="text-green-500">🗸️</button>
-      <button onclick={() => datum.content = original}>🗑️</button>
+      <button onclick={() => value = datum?.content}>🗑️</button>
     </form>
   {:else}
     <span
@@ -88,9 +71,9 @@
       role="button"
       tabindex={0}
       class="truncate grow shrink pointer-events-none"
-    >{datum.content}</span>
+    >{datum?.content}</span>
   {/if}
-  <Pill status={datum.status} onChange={restatus}/>
+  <Pill status={datum?.status} onChange={restatus}/>
 </section>
 
 <style>

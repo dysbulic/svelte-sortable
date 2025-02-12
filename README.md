@@ -1,6 +1,6 @@
 # Pragmatic Drag and Drop in Svelte
 
-This is a port of the [Pragmatic Drag and Drop](https://atlassian.design/components/pragmatic-drag-and-drop/) from [Atlassian's UI Kit](https://atlaskit.atlassian.com/)'s [simple example](https://github.com/atlassian/pragmatic-drag-and-drop/discussions/71) to Svelte 5 with some modifications to make the code more easily reusable and some additional state to allow reversing operations.
+This is an adaptation of the [Pragmatic Drag and Drop](https://atlassian.design/components/pragmatic-drag-and-drop/) from [Atlassian's UI Kit](https://atlaskit.atlassian.com/)'s [simple example](https://github.com/atlassian/pragmatic-drag-and-drop/discussions/71) to work with Svelte 5, with some modifications to make the code more easily reusable and to allow reversing operations.
 
 ## Development Server
 

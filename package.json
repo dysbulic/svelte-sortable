@@ -2,8 +2,29 @@
 	"name": "svelte-pragmatic-sortable",
 	"license": "CC0-1.0",
 	"private": false,
-	"version": "0.3.2",
+	"version": "0.3.5",
 	"type": "module",
+	"authors": [
+		{
+			"name": "Alex Reardon",
+			"url": "https://github.com/alexreardon/"
+		},
+		{
+			"name": "dysbulic",
+			"url": "https://trwb.live/"
+		}
+	],
+	"homepage": "https://dysbulic.github.io/svelte-pragmatic-sortable/",
+	"repository": {
+		"url": "https://github.com/dysbulic/svelte-pragmatic-sortable.git"
+	},
+	"keywords": [
+		"html",
+		"svelte",
+		"sortable",
+		"drag-and-drop",
+		"pragmatic-dnd"
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -21,6 +42,7 @@
 		"@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.474.0",
+		"runed": "^0.23.3",
 		"tailwindcss": "^4.0.3",
 		"tiny-invariant": "^1.3.3"
 	},
@@ -54,7 +76,9 @@
 			"svelte": "./dist/index.js"
 		}
 	},
-	"sideEffects": ["**/*.css"],
+	"sideEffects": [
+		"**/*.css"
+	],
 	"packageManager": "pnpm@10.2.1+sha512.398035c7bd696d0ba0b10a688ed558285329d27ea994804a52bad9167d8e3a72bcb993f9699585d3ca25779ac64949ef422757a6c31102c12ab932e5cbe5cc92",
 	"pnpm": {
 		"onlyBuiltDependencies": [

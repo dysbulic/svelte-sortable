@@ -41,12 +41,12 @@
   const idle: DragState = { type: 'idle' }
 
   let {
-    datum, isDatum,
+    datum = $bindable(null), isDatum,
     row: Row, rowClasses,
     preview: Preview,
     history = $bindable([]),
   }: {
-    datum: R
+    datum: R | null
     isDatum: (datum: unknown) => datum is R
     row: Component<R>
     rowClasses?: (type: DragStateType) => string | Array<string>
@@ -127,11 +127,11 @@
 
 <li class="relative">
   <div
-    data-element-id={datum.id}
+    data-element-id={datum?.id}
     bind:this={element}
     class={rowClasses?.(status.type)}
   >
-    <Row {datum}/>
+    <Row bind:datum/>
   </div>
   {#if status.type === 'is-dragging-over' && status.closestEdge}
     <DropIndicator edge={status.closestEdge} gap={'0.5rem'}/>
